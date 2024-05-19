@@ -24,6 +24,9 @@ function getRecipesFromStorage() {
 	// A9. TODO - Complete the functionality as described in this function
 	//           header. It is possible in only a single line, but should
 	//           be no more than a few lines.
+	const mog = localStorage.getItem('recipes')
+	if(mog === null) return []
+	return JSON.parse(mog)
 }
 
 /**
@@ -39,6 +42,12 @@ function addRecipesToDocument(recipes) {
 	//            create a <recipe-card> element for each one, and populate
 	//            each <recipe-card> with that recipe data using element.data = ...
 	//            Append each element to <main>
+	const main = document.querySelector('main')
+	for(const r of recipes){
+		let el = document.createElement('recipe-card')
+		el.data = r
+		main.appendChild(el)
+	}
 }
 
 /**
@@ -51,6 +60,7 @@ function saveRecipesToStorage(recipes) {
 	// B1. TODO - Complete the functionality as described in this function
 	//            header. It is possible in only a single line, but should
 	//            be no more than a few lines.
+	localStorage.setItem('recipes',JSON.stringify(recipes))
 }
 
 /**
@@ -76,4 +86,22 @@ function initFormHandler() {
 	// Steps B12 & B13 will occur inside the event listener from step B11
 	// B12. TODO - Clear the local storage
 	// B13. TODO - Delete the contents of <main>
+	let form = document.querySelector('form')
+	let main = document.querySelector('main')
+	form.addEventListener('submit',()=>{
+		const data = new FormData(form)
+		let r = Object.fromEntries(data)
+		console.log(r)
+		let el = document.createElement('recipe-card')
+		el.data = r
+		main.appendChild(el)
+		let bruh = getRecipesFromStorage()
+		bruh.push(r)
+		saveRecipesToStorage(bruh)
+	})
+	const clear = document.querySelector('.danger')
+	clear.addEventListener('click', ()=>{
+		localStorage.clear()
+		main.innerHTML = ''
+	})
 }
